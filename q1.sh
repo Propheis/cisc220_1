@@ -2,7 +2,7 @@
 
 mode="number" #options are number, operator, execute
 
-total=0
+total="None"
 number="None"
 operator="None"
 
@@ -34,7 +34,7 @@ function get_operator() {
 	if [[ $op == ":q" ]]; then
 	    echo "Thanks for using my calculator"
 	    exit 0
-        elif ! [[ $op == $op_regex ]]; then
+        elif ! [[ $op =~ $op_regex ]]; then
 	    echo "Error! Please insert an operator"
 	fi
     done
@@ -51,6 +51,17 @@ function get_next_values() {
 	    mode="operator"
 	fi
     done
+    mode="execute"
+}
+
+function calculate_total() {
+    case $operator in
+	"+") total=$(($total+$number));;
+	"-") total=$(($total-$number));;
+	"*") total=$(($total*$number));;
+	"/") total=$(($total/$number));;
+	*)   echo "Something went horribly wrong"
+    esac
 }
 
 while (true); do
@@ -63,6 +74,8 @@ while (true); do
     elif [[ $mode != "execute" ]]; then
 	get_next_values
     fi
+
+    calculate_total
 
     number="None"
     operator="None"
