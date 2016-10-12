@@ -58,8 +58,14 @@ function calculate_total() {
     case $operator in
 	"+") total=$(($total+$number));;
 	"-") total=$(($total-$number));;
+	"/")
+	    if [[ $number == 0 ]]; then
+		echo "Cannot divide by zero. Sorry"
+	    else
+		total=$(($total/$number))
+	    fi
+	    ;;
 	"*") total=$(($total*$number));;
-	"/") total=$(($total/$number));;
 	*)   echo "Something went horribly wrong"
     esac
 }
