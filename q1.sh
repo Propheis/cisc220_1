@@ -3,46 +3,71 @@
 mode="number" #options are number, operator, execute
 
 total=0
-number1="None"
-number2="None"
+number="None"
 operator="None"
 
-while (true); do
-    if (($mode!="execute")); then
-	echo get_input_message
-    fi
-    calculate_new_total
-    number1="None"
-    number2="None"
-    operator="None"
-    mode="number"
+function get_number() {
+    num="None"
+    int_regex=^-?[0-9]+$
 
-    echo "The new total is $(total)"
-done
+    while ! [[ "$num" =~ $int_regex ]]; do
+	read -p "Please enter a number: " num
 
-function get_input_message() {
-    enter_text="Please enter a number:"
-    enter_op="Please enter an operator:"
-    if (($mode=="number")); then
-	if (($number1=="None")); then
-	    number1=read -p $enter_text
-	else
-	    number2=read -p $enter_text
+	if [[ $num == ":q" ]]; then
+	    echo "Thanks for using my calculator"
+	    exit 0
+	elif ! [[ $num =~ $int_regex ]]; then
+	    echo "Error! Please insert a number"
 	fi
-    elif (($mode=="operator")); then
-	operator=read -p $enter_op 
-    fi
+	
+    done
+    number=$num
 }
 
-function calculate_new_total() {
-    if   (($operator=="plus")); then
-        total=$number1+$number2
-    elif (($operator=="minus")); then
-	total=$number1-$number2
-    elif (($operator=="multiply")); then
-	total=$number1*$number2
-    else
-	total=$number1/1.0*$number2 # 1.0 to ensure floating point division
-    fi
+function get_operator() {
+    op="None"
+    op_regex=^[+/*\-]{1}$
+
+    while ! [[ "$op" =~ $op_regex ]]; do
+	read -p "Please enter an operator: " op
+
+	if [[ $op == ":q" ]]; then
+	    echo "Thanks for using my calculator"
+	    exit 0
+        elif ! [[ $op == $op_regex ]]; then
+	    echo "Error! Please insert an operator"
+	fi
+    done
+    operator=$op
 }
+
+function get_next_values() {
+    while [[ $number == "None" || $operator == "None" ]]; do
+	if [[ $mode == "operator" ]]; then
+	    get_operator
+	    mode="number"
+        elif [[ $mode == "number" ]]; then
+	    get_number
+	    mode="operator"
+	fi
+    done
+}
+
+while (true); do
+    if [[ $total == "None" ]]; then  # Should only happen once
+	get_number
+	total=$number
+	number="None"
+	mode="operator"
+	get_next_values
+    elif [[ $mode != "execute" ]]; then
+	get_next_values
+    fi
+
+    number="None"
+    operator="None"
+    mode="operator"
+
+    echo "The new total is $((total))"
+done
 
