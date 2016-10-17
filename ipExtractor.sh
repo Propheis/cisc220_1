@@ -1,4 +1,7 @@
 #!/bin/bash
+# Marissa Huang - 10179169
+# Deven Bernard - 10099810
+# Kevin Zuern - 10134425
 ifconfig 1> ipAddress.txt
 addr=$(grep -e "inet addr:" ipAddress.txt | awk '{print $1,$2}' | awk -F ":" '{print $2}')
 for val in $addr; do
