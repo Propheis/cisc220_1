@@ -50,7 +50,10 @@ function traverse_all_child_files() {
 
   while read entry; do
     
-    if [[ ! $entry =~ \t\o\t\a\l ]] && [[ ! $entry =~ ^.{10}\ \.\.? ]]; then
+    if [[ ! $entry =~ total 
+       && ! $entry =~ ^.{10}\ \.\.?
+       && ! $entry =~ permissionsSaver
+       && ! $entry =~ savedPermissions ]]; then
       echo $entry >> $savedPermissions  
     fi
   
@@ -72,8 +75,7 @@ elif [[ $1 =~ ^\-r$ ]]; then
 elif [[ $1 =~ (^\-\-help$)|(^\-h$) ]]; then
   show_help
 elif [[ $1 =~ '' ]]; then
-  #snapshot_permissions
-  echo $(getFileName)
+  snapshot_permissions
 else
   echo "Invalid arguments specified"
   show_help
