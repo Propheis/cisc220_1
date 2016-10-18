@@ -8,18 +8,6 @@
 #
 
 
-function show_help() {
-  echo "help"
-}
-
-function show_permission_diff() {
-  echo "show"
-}
-
-function reset_permissions() {
-  echo "reset"
-}
-
 function snapshot_permissions() {
   traverse_all_child_files
 }
@@ -50,11 +38,13 @@ function traverse_all_child_files() {
 
   while read entry; do
     
-    if [[ ! $entry =~ total 
-       && ! $entry =~ ^.{10}\ \.\.?
-       && ! $entry =~ permissionsSaver
-       && ! $entry =~ savedPermissions ]]; then
-      echo $entry >> $savedPermissions  
+    if [[  $entry =~ ^.{10}\ \/.*                 # Only absolute paths
+        && ! $entry =~ total                      # Ignore total files in dir line
+        && ! $entry =~ ^.{10}\ \.\.?              # Ignore parent dirs
+        && ! $entry =~ permissionsSaver
+        && ! $entry =~ permissionsResetter
+        && ! $entry =~ savedPermissions ]]; then
+      echo $entry >> $savedPermissions
     fi
   
   done <.permissionsTemp
@@ -64,19 +54,5 @@ function traverse_all_child_files() {
 
 }
 
-########################################
-########################################
-########################################
-
-if [[ $1 =~ ^\-s$ ]]; then
-  show_permission_diff
-elif [[ $1 =~ ^\-r$ ]]; then
-  reset_permissions
-elif [[ $1 =~ (^\-\-help$)|(^\-h$) ]]; then
-  show_help
-elif [[ $1 =~ '' ]]; then
-  snapshot_permissions
-else
-  echo "Invalid arguments specified"
-  show_help
-fi
+snapshot_permissions
+echo "All done!"
