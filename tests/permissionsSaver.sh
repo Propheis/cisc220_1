@@ -31,19 +31,13 @@ function snapshot_permissions() {
 function getFileName() {
   snapshotNumber=""
 
-  if [ ! -f "$(pwd)/snapshotNumber" ]; then
-    echo "hi"
+  if [ ! -f $(pwd)/savedPermissions ]; then
     touch savedPermissions
   else
     snapshotNumber="$(find savedPermissions* | wc -l )"
-    echo $snapshotNumber
   fi
 
-  # get the new number to append to our filename
-  
-
   echo "savedPermissions$snapshotNumber"
-  #echo "savedPermissions1"
 }
 
 function traverse_all_child_files() {
