@@ -50,9 +50,7 @@ function traverse_all_child_files() {
   done <.permissionsTemp
 
   rm .permissionsTemp
-  cat $savedPermissions
-
+  echo "$savedPermissions created!"
 }
 
 snapshot_permissions
-echo "All done!"
